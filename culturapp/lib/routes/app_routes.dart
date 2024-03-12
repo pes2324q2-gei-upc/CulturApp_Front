@@ -5,6 +5,6 @@ import 'package:flutter/material.dart';
 
 
 Map<String, Widget Function(BuildContext)> appRoutes = {
-  Routes.map: (_) => const MapPage(),
+  //Routes.map: (_) => const MapPage(),
   Routes.actividades: (_) => const ListaActividades()
 };

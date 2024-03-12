@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:math' as math;
 
-import 'package:culturapp/actividad/vista_ver_actividad.dart';
 import 'package:culturapp/actividades/actividad.dart';
 import 'package:culturapp/controlador_presentacion.dart';
 import 'package:flutter/material.dart';
