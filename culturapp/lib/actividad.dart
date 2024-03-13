@@ -5,31 +5,50 @@ class Actividad {
   late double latitud;
   late double longitud;
   late String imageUrl;
-  late String description;
+  late String descripcio; // Corregir aquí
   late String dataInici;
   late String dataFi;
   late String ubicacio;
   late Uri urlEntrades;
   late String preu;
+  late String comarca;
+  late String horari;
 
-  Actividad(this.name, this.code);
-
+  Actividad({
+    required this.name,
+    required this.code,
+    required this.categoria,
+    required this.latitud,
+    required this.longitud,
+    required this.dataInici,
+    required this.dataFi,
+    required this.horari,
+    required this.descripcio, // Corregir aquí
+    required this.comarca,
+    required this.imageUrl,
+    required this.preu,
+    required this.ubicacio,
+    required this.urlEntrades,
+  });
   Actividad.fromJson(Map<String, dynamic> json) {
     name = json['denominaci'];
     code = json['codi'];
     latitud = json['latitud'] != null ? double.parse(json['latitud']) : 1.0;
     longitud = json['longitud'] != null ? double.parse(json['longitud']) : 1.0;
-    description = json['descripcio'] ?? 'No hi ha cap descripció per aquesta activitat.';
+    descripcio = json['descripcio'] ?? 'No hi ha cap descripció per aquesta activitat.';
     ubicacio = json['adre_a'] ?? 'No disponible';
     
     String tagsCategorias = json['tags_categor_es'] ?? '';
     if (tagsCategorias.contains('agenda:categories/')) {
       //Obtener valor del punto en el que comienza la categoria
-      int startIndex = tagsCategorias.indexOf('agenda:categories/') + 'agenda:categories/'.length;
+      int startIndex = tagsCategorias.indexOf('agenda:categories/') +
+          'agenda:categories/'.length;
       //Obtener valor del punto en el que acaba la categoria
       int endIndex = tagsCategorias.indexOf(',', startIndex);
       //Coger la categoria entre punto inicio y final si ha encontrado la "," sino de inicio hasta final
-      categoria = endIndex != -1 ? tagsCategorias.substring(startIndex, endIndex) : tagsCategorias.substring(startIndex);
+      categoria = endIndex != -1
+          ? tagsCategorias.substring(startIndex, endIndex)
+          : tagsCategorias.substring(startIndex);
     } else {
       categoria = ' ';
     }
@@ -82,6 +101,26 @@ class Actividad {
         } else {
             preu = entrades;
         }
+    }
+
+    horari = json['horari'] ?? "horari_nul";
+
+  
+    String comarcaAll = json['comarca'] ?? '-';
+    if(comarcaAll.contains('agenda:ubicacions/')) {
+      // Split the string on '/'
+      List<String> comarcaParts = comarcaAll.split('/');
+      
+      // Take the last part of the split
+      String comarcaLastPart = comarcaParts.last;
+      
+      // Replace all '-' with ' '
+      String comarcaReplaced = comarcaLastPart.replaceAll('-', ' ');
+      
+      // Capitalize the first letter and make the rest of the string lowercase
+      comarca = comarcaReplaced[0].toUpperCase() + comarcaReplaced.substring(1).toLowerCase();
+    } else {
+      comarca = '';
     }
 
   }

@@ -1,12 +1,10 @@
-import 'dart:convert';
 import 'dart:math' as math;
 
-import 'package:culturapp/actividades/actividad.dart';
+import 'package:culturapp/actividad.dart';
 import 'package:culturapp/controlador_presentacion.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 
 class MapPage extends StatefulWidget {
@@ -21,7 +19,7 @@ class MapPage extends StatefulWidget {
 
 class _MapPageState extends State<MapPage> {
 
-  late ControladorPresentacion _controladorPresentacion;  
+  late ControladorPresentacion _controladorPresentacion;
 
   _MapPageState(ControladorPresentacion controladorPresentacion){
     _controladorPresentacion = controladorPresentacion;
@@ -46,6 +44,7 @@ class _MapPageState extends State<MapPage> {
 
   List<Actividad> _actividades = [];
   GoogleMapController? _mapController;
+  List<String> categoriasFavoritas = ['circ', 'festes', 'activitats-virtuals'];
 
 double radians(double degrees) {
   return degrees * (math.pi / 180.0);
@@ -71,18 +70,14 @@ double calculateDistance(LatLng from, LatLng to) {
   // Obtener actividades del JSON para mostrarlas por pantalla
   Future<List<Actividad>> fetchActivities(LatLng center, double zoom) async {
     double radius = 1500 * (16 / zoom);
-    var url = Uri.parse("https://analisi.transparenciacatalunya.cat/resource/rhpv-yr4f.json");
-    var response = await http.get(url);
-    var actividades = <Actividad>[];
-
-    if (response.statusCode == 200) {
-      var actividadesJson = json.decode(response.body);
-      for (var actividadJson in actividadesJson) {
-        var actividad = Actividad.fromJson(actividadJson);
-        // Comprobar si la actividad está dentro del radio
-        if (calculateDistance(center, LatLng(actividad.latitud, actividad.longitud)) <= radius) {
-          actividades.add(actividad);
-        }
+    var actividades = await _controladorPresentacion.getActivities();
+    var actividadesaux = <Actividad> [];
+    for (var actividad in actividades) {
+      // Comprobar si la actividad está dentro del radio
+      if (calculateDistance(
+              center, LatLng(actividad.latitud ?? 0.0, actividad.longitud ?? 0.0)) <=
+          radius) {
+        actividadesaux.add(actividad);
       }
     }
     return actividades;
@@ -239,7 +234,7 @@ double calculateDistance(LatLng from, LatLng to) {
                   Column(
                     children: <Widget>[
                       Text(
-                        actividad.description,
+                        actividad.descripcio,
                         overflow: TextOverflow.ellipsis,  //Poner puntos suspensivos para evitar pixel overflow
                         maxLines: 3,
                         style: const TextStyle(fontSize: 12.0),
@@ -250,16 +245,16 @@ double calculateDistance(LatLng from, LatLng to) {
                         height: 35.0,
                         child: ElevatedButton(
                           onPressed: () {
-                            List<String> act = [actividad.name, 
-                                                actividad.code, 
+                            List<String> act = [actividad.name,
+                                                actividad.code,
                                                 actividad.categoria,
-                                                actividad.imageUrl, 
-                                                actividad.description, 
+                                                actividad.imageUrl,
+                                                actividad.descripcio,
                                                 actividad.dataInici,
-                                                actividad.dataFi, 
+                                                actividad.dataFi,
                                                 actividad.ubicacio];
 
-                            _controladorPresentacion.mostrarVerActividad(context, act, actividad.urlEntrades);                    
+                            _controladorPresentacion.mostrarVerActividad(context, act, actividad.urlEntrades);
                           },
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all(Colors.orange),
@@ -282,7 +277,6 @@ double calculateDistance(LatLng from, LatLng to) {
       },
     );
   }
-
   // Crea y ubica los marcadores
   Set<Marker> _createMarkers() {
     return _actividades.map((actividad) {
@@ -298,6 +292,9 @@ double calculateDistance(LatLng from, LatLng to) {
 
   // En funcion de la categoria atribuye un marcador
   BitmapDescriptor _getMarkerIcon(String categoria) {
+    /*for (int i = 0; i < 3; ++i) {
+      if (categoria == categoriasFavoritas[i]) categoria = 'recom';
+    }*/
     switch (categoria) {
         case 'carnavals':
           return iconoCarnaval;
@@ -417,6 +414,9 @@ double calculateDistance(LatLng from, LatLng to) {
         fetchActivities(position.target, zoom).then((value) {
           setState(() {
             _actividades = value;
+
+            print(_actividades);
+
           });
         });
       });
