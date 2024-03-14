@@ -32,7 +32,7 @@ app.post('/create', async (req, res) => {
 
 app.get('/read/all', async (req, res) => {
     try {
-        const activityRef = db.collection("actividades").limit(2);
+        const activityRef = db.collection("actividades").limit(100);
         const response = await activityRef.get();
         let responseArr = [];
         response.forEach(doc => {

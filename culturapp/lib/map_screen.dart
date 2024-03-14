@@ -148,12 +148,22 @@ double calculateDistance(LatLng from, LatLng to) {
                       //Imagen
                       ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        child: SizedBox( // se mete aqui la imagen para poder modificar su tamaño
+                        child: SizedBox(
                           height: 150.0,
                           width: 150.0,
                           child: Image.network(
                             actividad.imageUrl,
-                            fit: BoxFit.cover, // Para que ocupe lo mismo que nombre + atributos
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              // Widget de error que se mostrará si la imagen no se carga correctamente
+                              return const Center(
+                                child: Icon(
+                                  Icons.error_outline,
+                                  color: Colors.red,
+                                  size: 48,
+                                ),
+                              );
+                            },
                           ),
                         ),
                       ),
@@ -175,7 +185,7 @@ double calculateDistance(LatLng from, LatLng to) {
                                   ),
                                 ),
                                 const Padding(padding: EdgeInsets.only(right: 5.0)),
-                                _retornaIcon(actividad.categoria), //Obtener el icono de la categoria
+                                _retornaIcon(actividad.categoria[0]), //Obtener el icono de la categoria
                               ],
                             ),
                             const Padding(padding: EdgeInsets.only(top: 7.5)),
@@ -247,7 +257,7 @@ double calculateDistance(LatLng from, LatLng to) {
                           onPressed: () {
                             List<String> act = [actividad.name,
                                                 actividad.code,
-                                                actividad.categoria,
+                                                actividad.categoria[0],
                                                 actividad.imageUrl,
                                                 actividad.descripcio,
                                                 actividad.dataInici,
@@ -284,7 +294,7 @@ double calculateDistance(LatLng from, LatLng to) {
         markerId: MarkerId(actividad.code),
         position: LatLng(actividad.latitud, actividad.longitud),
         infoWindow: InfoWindow(title: actividad.name),
-        icon: _getMarkerIcon(actividad.categoria), // Llama a la función para obtener el icono
+        icon: _getMarkerIcon(actividad.categoria[0]), // Llama a la función para obtener el icono
         onTap: () => showActividadDetails(actividad),
       );
     }).toSet();
@@ -414,8 +424,6 @@ double calculateDistance(LatLng from, LatLng to) {
         fetchActivities(position.target, zoom).then((value) {
           setState(() {
             _actividades = value;
-
-            print(_actividades);
 
           });
         });
