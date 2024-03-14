@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:culturapp/actividad.dart';
+import 'actividad.dart';
 import 'package:http/http.dart' as http;
 
 
