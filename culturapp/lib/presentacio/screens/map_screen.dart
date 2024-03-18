@@ -1,7 +1,9 @@
 import 'dart:math' as math;
 
+import 'package:culturapp/data/database_service.dart';
 import 'package:culturapp/domain/models/actividad.dart';
-import 'package:culturapp/presentacio/controlador_presentacio.dart';
+import 'package:culturapp/presentacio/controlador_presentacion.dart';
+import 'package:culturapp/presentacio/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -19,11 +21,8 @@ class MapPage extends StatefulWidget {
 class _MapPageState extends State<MapPage> {
   late ControladorPresentacion _controladorPresentacion;
 
-  late List<Actividad> activitats;
-
-  _MapPageState(ControladorPresentacion controladorPresentacion){
+  _MapPageState(ControladorPresentacion controladorPresentacion) {
     _controladorPresentacion = controladorPresentacion;
-    activitats = _controladorPresentacion.getActivitats();
   }
 
   BitmapDescriptor iconoArte = BitmapDescriptor.defaultMarker;
@@ -72,8 +71,9 @@ class _MapPageState extends State<MapPage> {
   // Obtener actividades del JSON para mostrarlas por pantalla
   Future<List<Actividad>> fetchActivities(LatLng center, double zoom) async {
     double radius = 1500 * (16 / zoom);
-    var actividadesaux = <Actividad> [];
-    for (var actividad in activitats) {
+    var actividades = await null; //getActivities();
+    var actividadesaux = <Actividad>[];
+    for (var actividad in actividades) {
       // Comprobar si la actividad está dentro del radio
       if (calculateDistance(center,
               LatLng(actividad.latitud ?? 0.0, actividad.longitud ?? 0.0)) <=
@@ -81,7 +81,7 @@ class _MapPageState extends State<MapPage> {
         actividadesaux.add(actividad);
       }
     }
-    return actividadesaux;
+    return actividades;
   }
 
   @override
@@ -207,21 +207,13 @@ class _MapPageState extends State<MapPage> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(20),
                         child: SizedBox(
+                          // se mete aqui la imagen para poder modificar su tamaño
                           height: 150.0,
                           width: 150.0,
                           child: Image.network(
                             actividad.imageUrl,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              // Widget de error que se mostrará si la imagen no se carga correctamente
-                              return const Center(
-                                child: Icon(
-                                  Icons.error_outline,
-                                  color: Colors.red,
-                                  size: 48,
-                                ),
-                              );
-                            },
+                            fit: BoxFit
+                                .cover, // Para que ocupe lo mismo que nombre + atributos
                           ),
                         ),
                       ),
@@ -244,8 +236,10 @@ class _MapPageState extends State<MapPage> {
                                     ),
                                   ),
                                 ),
-                                const Padding(padding: EdgeInsets.only(right: 5.0)),
-                                _retornaIcon(actividad.categoria[0]), //Obtener el icono de la categoria
+                                const Padding(
+                                    padding: EdgeInsets.only(right: 5.0)),
+                                _retornaIcon(actividad
+                                    .categoria), //Obtener el icono de la categoria
                               ],
                             ),
                             const Padding(padding: EdgeInsets.only(top: 7.5)),
@@ -323,14 +317,16 @@ class _MapPageState extends State<MapPage> {
                         height: 35.0,
                         child: ElevatedButton(
                           onPressed: () {
-                            List<String> act = [actividad.name,
-                                                actividad.code,
-                                                actividad.categoria[0],
-                                                actividad.imageUrl,
-                                                actividad.descripcio,
-                                                actividad.dataInici,
-                                                actividad.dataFi,
-                                                actividad.ubicacio];
+                            List<String> act = [
+                              actividad.name,
+                              actividad.code,
+                              actividad.categoria,
+                              actividad.imageUrl,
+                              actividad.descripcio,
+                              actividad.dataInici,
+                              actividad.dataFi,
+                              actividad.ubicacio
+                            ];
 
                             _controladorPresentacion.mostrarVerActividad(
                                 context, act, actividad.urlEntrades);
@@ -363,7 +359,8 @@ class _MapPageState extends State<MapPage> {
         markerId: MarkerId(actividad.code),
         position: LatLng(actividad.latitud, actividad.longitud),
         infoWindow: InfoWindow(title: actividad.name),
-        icon: _getMarkerIcon(actividad.categoria[0]), // Llama a la función para obtener el icono
+        icon: _getMarkerIcon(
+            actividad.categoria), // Llama a la función para obtener el icono
         onTap: () => showActividadDetails(actividad),
       );
     }).toSet();
@@ -516,6 +513,7 @@ class _MapPageState extends State<MapPage> {
           setState(() {
             _actividades = value;
 
+            print(_actividades);
           });
         });
       });
@@ -528,20 +526,21 @@ class _MapPageState extends State<MapPage> {
   }
 
   void _onTabChange(int index) {
-    /*switch (index) {
+    switch (index) {
       case 0:
         break;
       case 1:
-        break;
+        Navigator.pushNamed(context, Routes.misActividades);
+      break;
       case 2:
         
         break;
       case 3:
-
-        break;
+        Navigator.pushNamed(context, Routes.perfil);
+      break;
       default:
         break;
-    }*/
+    }
   }
 
   //Se crea la ''pantalla'' para el mapa - falta añadir dock inferior y barra de busqueda
