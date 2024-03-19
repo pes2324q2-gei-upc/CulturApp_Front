@@ -531,13 +531,12 @@ class _MapPageState extends State<MapPage> {
         break;
       case 1:
         Navigator.pushNamed(context, Routes.misActividades);
-      break;
+        break;
       case 2:
-        
         break;
       case 3:
-        Navigator.pushNamed(context, Routes.perfil);
-      break;
+        _controladorPresentacion.mostrarPerfil(context);
+        break;
       default:
         break;
     }
