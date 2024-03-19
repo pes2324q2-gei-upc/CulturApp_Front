@@ -1,9 +1,12 @@
+import 'dart:js';
+
 import 'package:culturapp/data/firebase_options.dart';
 import 'package:culturapp/presentacio/controlador_presentacio.dart';
 import 'package:culturapp/presentacio/screens/login.dart';
 import 'package:culturapp/presentacio/screens/map_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 
 void main() async {
   // Asegura que Flutter esté inicializado
@@ -26,13 +29,113 @@ class MyApp extends StatelessWidget {
 
   MyApp({Key? key, required this.controladorPresentacion}) : super(key: key);
 
+  void _onTabChange(int index, BuildContext context) {
+    switch (index) {
+      case 0:
+        break;
+      case 1:
+        break;
+      case 2:
+        
+        break;
+      case 3:
+        controladorPresentacion.mostrarPerfil(context);
+        break;
+      default:
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
         primarySwatch: Colors.orange,
+      
       ),
-      home: Login(controladorPresentacion: controladorPresentacion),
+      home: Scaffold(
+        body: Login(controladorPresentacion: controladorPresentacion),
+        bottomNavigationBar: Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(50.0)),
+            ),
+            child: GNav(
+              backgroundColor: Colors.white,
+              color: Colors.orange,
+              activeColor: Colors.orange,
+              tabBackgroundColor: Colors.grey.shade100,
+              gap: 6,
+              onTabChange: (index) {
+                _onTabChange(index, context);
+              },
+              selectedIndex: 0,
+              tabs: [
+                GButton(
+                    text: "Mapa",
+                    textStyle: TextStyle(fontSize: 12, color: Colors.orange),
+                    icon: Icons.map),
+                GButton(
+                  text: "Mis Actividades",
+                  textStyle: TextStyle(fontSize: 12, color: Colors.orange),
+                  icon: Icons.event,
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/myActivities');
+                  },
+                ),
+                GButton(
+                    text: "Chats",
+                    textStyle: TextStyle(fontSize: 12, color: Colors.orange),
+                    icon: Icons.chat),
+                GButton(
+                    text: "Perfil",
+                    textStyle: TextStyle(fontSize: 12, color: Colors.orange),
+                    icon: Icons.person),
+              ],
+            ),
+          ),
+        ),
     );
   }
 }
+/*
+bottomNavigationBar: Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(50.0)),
+        ),
+        child: GNav(
+          backgroundColor: Colors.white,
+          color: Colors.orange,
+          activeColor: Colors.orange,
+          tabBackgroundColor: Colors.grey.shade100,
+          gap: 6,
+          onTabChange: (index) {
+            _onTabChange(index);
+          },
+          selectedIndex: 0,
+          tabs: [
+            GButton(
+                text: "Mapa",
+                textStyle: TextStyle(fontSize: 12, color: Colors.orange),
+                icon: Icons.map),
+            GButton(
+              text: "Mis Actividades",
+              textStyle: TextStyle(fontSize: 12, color: Colors.orange),
+              icon: Icons.event,
+              onPressed: () {
+                Navigator.pushNamed(context, '/myActivities');
+              },
+            ),
+            GButton(
+                text: "Chats",
+                textStyle: TextStyle(fontSize: 12, color: Colors.orange),
+                icon: Icons.chat),
+            GButton(
+                text: "Perfil",
+                textStyle: TextStyle(fontSize: 12, color: Colors.orange),
+                icon: Icons.person),
+          ],
+        ),
+      ),
+    */
