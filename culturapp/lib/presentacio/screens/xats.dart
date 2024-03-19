@@ -1,10 +1,13 @@
+import "package:culturapp/presentacio/controlador_presentacio.dart";
 import "package:culturapp/presentacio/screens/afegir_amics.dart";
 import "package:culturapp/presentacio/screens/amics.dart";
 import "package:flutter/material.dart";
 import "package:google_nav_bar/google_nav_bar.dart";
 
 class Xats extends StatefulWidget {
-  const Xats({super.key});
+  final ControladorPresentacion controladorPresentacion;
+
+  const Xats({super.key, required this.controladorPresentacion});
 
   @override
   State<Xats> createState() => _Xats();

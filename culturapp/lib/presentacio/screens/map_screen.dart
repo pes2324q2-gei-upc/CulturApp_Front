@@ -539,6 +539,7 @@ class _MapPageState extends State<MapPage> {
         //_controladorPresentacion.mostrarMisActividades(context, userID);
         break;
       case 2:
+        _controladorPresentacion.mostrarXats(context);
         break;
       case 3:
         _controladorPresentacion.mostrarPerfil(context);
