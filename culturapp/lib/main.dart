@@ -16,7 +16,6 @@ void main() async {
   final controladorPresentacion = ControladorPresentacion();
 
   await controladorPresentacion.initialice();
-
   // Inicia la aplicación
   runApp(MyApp(controladorPresentacion: controladorPresentacion));
 }
@@ -29,11 +28,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.orange,
       ),
-      //home: Login(controladorPresentacion: controladorPresentacion),
-      home: MapPage(controladorPresentacion: controladorPresentacion),
+      home: Login(controladorPresentacion: controladorPresentacion),
+      //home: MapPage(controladorPresentacion: controladorPresentacion),
     );
   }
 }
