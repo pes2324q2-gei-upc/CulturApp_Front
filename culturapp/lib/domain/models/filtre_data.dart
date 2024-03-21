@@ -12,6 +12,8 @@ class FiltreData extends StatefulWidget {
 }
 
 class _FiltreState extends State<FiltreData> {
+  late String date;
+
   TextEditingController _dateController = TextEditingController();
 
   @override

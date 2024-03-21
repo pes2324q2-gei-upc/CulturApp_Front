@@ -14,7 +14,7 @@ class _FiltreState extends State<FiltreCategoria> {
     'concert',
     'infantil',
     'teatre'
-    //agar tots els tipus
+    //agafar tots els tipus
   ];
   late String _selectedCategory = llistaCategories.first;
   //categoria seleccionada, canviar a un filler
