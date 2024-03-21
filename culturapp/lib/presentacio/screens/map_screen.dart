@@ -601,9 +601,11 @@ class _MapPageState extends State<MapPage> {
       case 0:
         break;
       case 1:
+        _controladorPresentacion.mostrarMisActividades(
+            context, "2aR4ekwm4RUYdvPgteZLdSJUew04");
         break;
       case 2:
-        //_controladorPresentacion.mostrarXats(context);
+        _controladorPresentacion.mostrarXats(context);
         break;
       case 3:
         _controladorPresentacion.mostrarPerfil(context);

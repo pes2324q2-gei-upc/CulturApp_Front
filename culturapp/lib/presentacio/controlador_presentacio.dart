@@ -62,6 +62,15 @@ class ControladorPresentacion {
     );
   }
 
+  void mostrarXats(BuildContext context) async {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => Xats(
+                  controladorPresentacion: this,
+                )));
+  }
+
   void mostrarMapaActividades(BuildContext context) async {
     Navigator.push(
       context,
@@ -80,7 +89,8 @@ class ControladorPresentacion {
   }
 
   Future<List<Actividad>> getUserActivities(String userID) =>
-      controladorDomini.getUserActivities(userID);
+      controladorDomini.getUserActivities("2aR4ekwm4RUYdvPgteZLdSJUew04");
+  //controladorDomini.getUserActivities(userID);
 
   FirebaseAuth getFirebaseAuth() {
     return _auth;

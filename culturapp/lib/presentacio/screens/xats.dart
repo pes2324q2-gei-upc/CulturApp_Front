@@ -10,12 +10,17 @@ class Xats extends StatefulWidget {
   const Xats({super.key, required this.controladorPresentacion});
 
   @override
-  State<Xats> createState() => _Xats();
+  State<Xats> createState() => _Xats(controladorPresentacion);
 }
 
 class _Xats extends State<Xats> {
   //List<Actividad> activitats = null; quan tinguem de base de dades fer-ho bé
   Widget currentContent = Amics();
+  late ControladorPresentacion _controladorPresentacion;
+
+  _Xats(ControladorPresentacion controladorPresentacion) {
+    _controladorPresentacion = controladorPresentacion;
+  }
 
   void changeContent(Widget newContent) {
     setState(() {
@@ -26,16 +31,15 @@ class _Xats extends State<Xats> {
   void _onTabChange(int index) {
     switch (index) {
       case 0:
-        Navigator.pushNamed(context, '/');
+        _controladorPresentacion.mostrarMapaActividades(context);
         break;
       case 1:
-        //Navigator.pushNamed(context, Routes.misActividades);
         break;
       case 2:
-        //Navigator.pushNamed(context, Routes.xats);
+        //_controladorPresentacion.mostrarXats(context);
         break;
       case 3:
-        //Navigator.pushNamed(context, Routes.perfil);
+        _controladorPresentacion.mostrarPerfil(context);
         break;
       default:
         break;
