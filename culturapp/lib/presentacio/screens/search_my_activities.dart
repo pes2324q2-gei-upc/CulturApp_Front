@@ -1,106 +1,41 @@
 import "dart:convert";
+import "package:culturapp/presentacio/controlador_presentacio.dart";
 import 'package:http/http.dart' as http;
 import "package:culturapp/domain/models/filtre_data.dart";
 import "package:culturapp/domain/models/actividad.dart";
 import "package:culturapp/domain/models/filtre_categoria.dart";
 import "package:flutter/material.dart";
 
-
- /*
 class SearchMyActivities extends StatefulWidget {
-  const SearchMyActivities({Key? key}) : super(key: key);
+  final ControladorPresentacion controladorPresentacion;
+
+  const SearchMyActivities(Key? key, this.controladorPresentacion);
 
   @override
-  State<SearchMyActivities> createState() => _SearchMyActivitiesState();
+  State<SearchMyActivities> createState() =>
+      _SearchMyActivitiesState(controladorPresentacion);
 }
 
- class _SearchMyActivitiesState extends State<SearchMyActivities> {
-  //dummy activitats fins que tinguem les de l'api
-  //fins que backend no funcioni
+class _SearchMyActivitiesState extends State<SearchMyActivities> {
+  late ControladorPresentacion _controladorPresentacion;
 
-  TextEditingController searchController = TextEditingController();
-  String selectedCategoria = '';
-  String selectedData = '';
+  _SearchMyActivitiesState(ControladorPresentacion controladorPresentacion) {
+    _controladorPresentacion = controladorPresentacion;
+    selectedCategoria = '';
+    selectedData = '';
+    squery = '';
+    llista = [];
+  }
 
-  /*Future<void> fetchMyActivities(
+  late String selectedCategoria;
+  late String selectedData;
+  late String squery;
+  late List<Actividad> llista;
+
+  Future<void> searchActivitat(
       String searchQuery, String categoria, String data) async {
-    String url =
-        '/activitats/user/:id/search?q=$searchQuery&filterCategoria=$categoria&filterData=$data';
-    var response = await http.get(Uri.parse(url));
-
-    if (response.statusCode == 200) {
-      List<dynamic> data = jsonDecode(response.body);
-      setState(() {
-        my_activities_list =
-            data.map((json) => Actividad.fromJson(json)).toList();
-      });
-    } else {
-      throw Exception('Failed to load actividades');
-    }
-  }*/
-
-  //borrar quan backend estigui implementat
-  static List<Actividad> display_list = [
-    Actividad(
-        name: "Super3",
-        code: "AABB",
-        categoria: "infantil",
-        latitud: 2.0,
-        longitud: 3.0,
-        imageUrl:
-            "https://i.pinimg.com/originals/10/ef/0c/10ef0c804190d04cace0f0096ccb8912.jpg",
-        descripcio: "descripcio",
-        dataInici: "10-07-2024",
-        dataFi: "23-07-2024",
-        ubicacio: "ubicacio",
-        urlEntrades: Uri(),
-        preu: "preu",
-        comarca: "comarca",
-        horari: "horari"),
-    Actividad(
-        name: "Super31",
-        code: "AACC",
-        categoria: "teatre",
-        latitud: 2.0,
-        longitud: 3.0,
-        imageUrl:
-            "https://i.pinimg.com/originals/10/ef/0c/10ef0c804190d04cace0f0096ccb8912.jpg",
-        descripcio: "descripcio",
-        dataInici: "10-08-2024",
-        dataFi: "23-08-2024",
-        ubicacio: "ubicacio",
-        urlEntrades: Uri(),
-        preu: "preu",
-        comarca: "comarca",
-        horari: "horari"),
-    Actividad(
-        name: "ConcertTaylor",
-        code: "AACC",
-        categoria: "concert",
-        latitud: 2.0,
-        longitud: 3.0,
-        imageUrl:
-            "https://i.pinimg.com/originals/10/ef/0c/10ef0c804190d04cace0f0096ccb8912.jpg",
-        descripcio: "descripcio",
-        dataInici: "30-11-2024",
-        dataFi: "23-12-2024",
-        ubicacio: "ubicacio",
-        urlEntrades: Uri(),
-        preu: "preu",
-        comarca: "comarca",
-        horari: "horari"),
-  ];
-  List<Actividad> my_activities_list = List.from(display_list); //[];
-
-  Future<void> fetchMyActivities(
-      String searchQuery, String categoria, String data) async {
-    setState(() {
-      my_activities_list = display_list
-          .where((element) =>
-              element.name.toLowerCase().contains(searchQuery.toLowerCase()) &&
-              (categoria == '' || element.categoria == categoria))
-          .toList();
-    });
+    llista = (await _controladorPresentacion.searchActivitatAmbFiltres(
+        searchQuery, categoria, data));
   }
 
   @override
@@ -128,34 +63,33 @@ class SearchMyActivities extends StatefulWidget {
                   height: 20.0,
                 ),
                 TextField(
-                  controller: searchController,
-                  onChanged: (text) =>
-                      fetchMyActivities(text, selectedCategoria, selectedData),
-                  cursorColor: Colors.white,
-                  style: const TextStyle(
-                    color: Colors.white,
-                  ),
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: const Color.fromRGBO(240, 186, 132, 1),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                      borderSide: BorderSide.none,
-                    ),
-                    hintText: "Search...",
-                    hintStyle: const TextStyle(
+                    cursorColor: Colors.white,
+                    style: const TextStyle(
                       color: Colors.white,
                     ),
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        fetchMyActivities(searchController.text,
-                            selectedCategoria, selectedData);
-                      },
-                      icon: Icon(Icons.search),
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: const Color.fromRGBO(240, 186, 132, 1),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        borderSide: BorderSide.none,
+                      ),
+                      hintText: "Search...",
+                      hintStyle: const TextStyle(
+                        color: Colors.white,
+                      ),
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          searchActivitat(
+                              squery, selectedCategoria, selectedData);
+                        },
+                        icon: Icon(Icons.search),
+                      ),
+                      suffixIconColor: Colors.white,
                     ),
-                    suffixIconColor: Colors.white,
-                  ),
-                ),
+                    onChanged: (value) {
+                      squery = value;
+                    }),
                 const SizedBox(
                   height: 10.0,
                 ),
@@ -187,23 +121,22 @@ class SearchMyActivities extends StatefulWidget {
                 ),
                 Expanded(
                   child: ListView.builder(
-                      itemCount: my_activities_list.length,
+                      itemCount: llista.length,
                       itemBuilder: (context, index) => ListTile(
                             contentPadding: const EdgeInsets.all(8.0),
-                            title: Text(my_activities_list[index].name,
+                            title: Text(llista[index].name,
                                 style: const TextStyle(
                                   color: Colors.orange,
                                   fontWeight: FontWeight.bold,
                                 )),
-                            subtitle: Text(my_activities_list[index].categoria,
+                            subtitle: Text(llista[index].categoria as String,
                                 style: const TextStyle(color: Colors.orange)),
-                            trailing: Text("${my_activities_list[index].preu}",
+                            trailing: Text("${llista[index].preu}",
                                 style: TextStyle(color: Colors.orange)),
-                            leading: Image.network(
-                                my_activities_list[index].imageUrl!),
+                            leading: Image.network(llista[index].imageUrl!),
                           )),
                 ),
               ]),
         ));
   }
-}*/
+}

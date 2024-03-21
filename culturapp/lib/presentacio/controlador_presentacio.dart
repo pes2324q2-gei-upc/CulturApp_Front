@@ -108,6 +108,11 @@ class ControladorPresentacion {
     return controladorDomini.searchActivitat(squery);
   }
 
+  Future<List<Actividad>> searchActivitatAmbFiltres(
+      String squery, String categoria, String date) {
+    return controladorDomini.searchActivitatAmbFiltres(squery, categoria, date);
+  }
+
   void checkLoggetInUser(BuildContext context) {
     //Obte l'usuari autentificat en el moment si existeix
     User? currentUser = _auth.currentUser;

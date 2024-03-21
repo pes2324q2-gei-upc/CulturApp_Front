@@ -47,6 +47,21 @@ class ControladorDomini {
     }
   }
 
+  Future<List<Actividad>> searchActivitatAmbFiltres(
+      String squery, String categoria, String date) async {
+    final respuesta = await http.get(Uri.parse(
+        'http://${ip}:8080/activitats/search/$squery/$categoria/$date'));
+    //si no funciona fer ifs segons date i categoria están plens o no
+
+    if (respuesta.statusCode == 200) {
+      return _convert_database_to_list(respuesta);
+    } else if (respuesta.statusCode == 404) {
+      throw Exception('No existe la actividad ' + squery);
+    } else {
+      throw Exception('Fallo en buscar la actividad');
+    }
+  }
+
   List<Actividad> _convert_database_to_list(response) {
     List<Actividad> actividades = <Actividad>[];
     var actividadesJson = json.decode(response.body);
