@@ -19,6 +19,7 @@ class ControladorPresentacion {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   late User? _user;
   late List<Actividad> activitats;
+  late List<Actividad>? misActivitats;
   late List<String> recomms;
   final List<String> categsFav = ['carnavals', 'concerts', 'conferencies'];
   late final List<Widget> _pages = [];
@@ -92,8 +93,13 @@ Future<void> initialice() async {
     return recomms;
   }
 
-  Future<List<Actividad>> getUserActivities(String userID) =>
-      controladorDomini.getUserActivities(userID);
+  Future<List<Actividad>> getUserActivities(String userID) {
+    if(misActivitats == null) {
+      return controladorDomini.getUserActivities(userID);
+    } else {
+      return Future.value(misActivitats);
+    }
+  }
 
   FirebaseAuth getFirebaseAuth() {
     return _auth;
