@@ -17,7 +17,12 @@ class UserActivitiesFutureBuilder extends StatelessWidget {
         // While the future is not resolved
         if (snapshot.connectionState != ConnectionState.done) {
           // Return loading screen
-          return const CircularProgressIndicator();
+          return Column(
+            children: [
+              Row(children: [Text('No data, the user name is: $userId')]),
+              Row(children: [const CircularProgressIndicator()],)
+            ],
+          );
         }
 
         // Once the future is resolved
@@ -28,10 +33,10 @@ class UserActivitiesFutureBuilder extends StatelessWidget {
           );
         } else if (snapshot.hasError) {
           // Handle error case
-          return Text('Error: ${snapshot.error}');
+          return Text('Error: ${snapshot.error}, the user name is: $userId');
         } else {
           // Handle no data case
-          return const Text('No data');
+          return Text('No data, the user name is: $userId');
         }
       },
     );

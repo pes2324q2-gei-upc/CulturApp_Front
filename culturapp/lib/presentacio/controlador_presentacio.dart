@@ -8,6 +8,7 @@ import 'package:culturapp/presentacio/screens/perfil_screen.dart';
 import 'package:culturapp/presentacio/screens/recomendador_actividades.dart';
 import 'package:culturapp/presentacio/screens/settings_perfil.dart';
 import 'package:culturapp/presentacio/screens/signup.dart';
+import 'package:culturapp/presentacio/screens/user_activities_future_builder.dart';
 import 'package:culturapp/presentacio/screens/vista_lista_actividades.dart';
 import 'package:culturapp/presentacio/screens/vista_mis_actividades.dart';
 import 'package:culturapp/presentacio/screens/vista_ver_actividad.dart';
@@ -29,7 +30,7 @@ Future<void> initialice() async {
 
   _pages.addAll([
     MapPage(controladorPresentacion: this),
-    ListaMisActividades(actividades: activitats,),
+    UserActivitiesFutureBuilder(cp: this, userId: _user!.uid,),
     ListaActividades(actividades: activitats), // Esta línea se agregó para inicializar ListaActividades con las actividades obtenidas
     PerfilPage(controladorPresentacion: this),
   ]);
