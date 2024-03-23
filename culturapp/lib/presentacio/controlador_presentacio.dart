@@ -96,10 +96,17 @@ Future<void> initialice() async {
 
   Future<List<Actividad>> getUserActivities(String userID) {
     if(misActivitats == null) {
-      return controladorDomini.getUserActivities(userID);
-    } else {
-      return Future.value(misActivitats);
-    }
+      misActivitats = controladorDomini.getUserActivities(userID) as List<Actividad>?;
+    } 
+    return Future.value(misActivitats);
+  }
+
+  void addToMyActivities(Actividad act) {
+    misActivitats?.add(act);
+  }
+
+  void deleteToMyActivities(Actividad act) {
+    misActivitats?.removeWhere((activitat) => activitat.code == act.code);
   }
 
   FirebaseAuth getFirebaseAuth() {
